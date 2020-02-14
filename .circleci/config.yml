@@ -8,8 +8,12 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
 
-workflows:
-  build:
-    jobs:
+    steps:
       - checkout
       - sonarcloud/scan
+
+workflows:
+  main:
+    jobs:
+      - build:
+        context: SonarCloud
