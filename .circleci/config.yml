@@ -2,10 +2,14 @@ version: 2.1
 
 orbs:
   sonarcloud: sonarsource/sonarcloud@1.0.1
-  welcome: circleci/welcome-orb@0.4.1
-  
+
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+
 workflows:
-  welcome:
+  build:
     jobs:
       - checkout
       - sonarcloud/scan
