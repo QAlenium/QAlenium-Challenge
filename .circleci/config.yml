@@ -8,6 +8,11 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk
 
+      working_directory: ~/QAlenium-Challenges
+
+      environment:
+        MAVEN_OPTS: -Xmx3200m
+
     steps:
       - checkout
       - sonarcloud/scan
@@ -16,4 +21,4 @@ workflows:
   main:
     jobs:
       - build:
-        context: SonarCloud
+          context: SonarCloud
