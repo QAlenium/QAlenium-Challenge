@@ -14,5 +14,4 @@ orbs:
 workflows:
   main:
     jobs:
-      - build:
-          context: SonarCloud
+      - build
