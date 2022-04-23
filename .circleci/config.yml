@@ -4,6 +4,7 @@ orbs:
   # Refer to this link to setup Slack channels: https://github.com/CircleCI-Public/slack-orb/wiki/Setup
   # Setup slack app also:  https://github.com/CircleCI-Public/slack-orb/issues/207#issuecomment-731219733
   slack: circleci/slack@4.9.3
+  sonarcloud: sonarsource/sonarcloud@1.0.3
 
 jobs:
   build:
@@ -11,11 +12,11 @@ jobs:
       image: ubuntu-2004:202010-01
     working_directory: ~/project
     steps:
-      - run:
-          name: Test command
-          command: ls
+      - checkout
+      # Note that sonar scan is triggered ONLY if automatic analysis is turned OFF
+      - sonarcloud/scan
       - slack/notify:
-          event: pass
+          event: always
           custom: |
             {
               "blocks": [
@@ -23,58 +24,7 @@ jobs:
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "Job ${CIRCLE_JOB} Succeeded. :tada:",
-                    "emoji": true
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Project*: $CIRCLE_PROJECT_REPONAME"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Branch*: $CIRCLE_BRANCH"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Author*: $CIRCLE_USERNAME"
-                    }
-                  ]
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": "View Job"
-                      },
-                      "url": "${CIRCLE_BUILD_URL}"
-                    }
-                  ]
-                }
-              ]
-            }
-      - slack/notify:
-          event: fail
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": "Job ${CIRCLE_JOB} Failed. :pensive:",
+                    "text": "Job ${CIRCLE_JOB} ${CCI_STATUS}.",
                     "emoji": true
                   }
                 },
